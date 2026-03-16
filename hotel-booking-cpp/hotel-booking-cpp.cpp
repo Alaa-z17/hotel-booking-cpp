@@ -1,3 +1,4 @@
+#pragma warning(disable : 4996)
 #include<iostream>
 #include<iomanip>
 #include<string>
@@ -465,7 +466,7 @@ enum enMainMenuChoice
     enExit = 6
 };
 
-short ReadMainMenuChoice()
+enMainMenuChoice ReadMainMenuChoice()
 {
     short Choice = 0;
     do
@@ -473,7 +474,7 @@ short ReadMainMenuChoice()
         PrintMainMenu();
         cin >> Choice;
     } while (Choice < 1 || Choice > 6);
-    return Choice;
+    return (enMainMenuChoice)Choice;
 }
 
 void RunHotelSystem()
@@ -484,41 +485,41 @@ void RunHotelSystem()
     LoadRoomList(vRooms);
     LoadBookingsFromFile(vBookings, vRooms);
 
-    short Choice = 0;
+    enMainMenuChoice  Choice = enMainMenuChoice::enShowRooms;
     do
     {
         ResetScreen();
         Choice = ReadMainMenuChoice();
         switch (Choice)
         {
-        case 1:
+            case enMainMenuChoice::enShowRooms:
             PrintRoomList(vRooms);
             break;
-        case 2:
+            case enMainMenuChoice::enBookRoom:
             AddBooking(vRooms, vBookings);
             SaveBookingsToFile(vBookings);
             break;
-        case 3:
+            case enMainMenuChoice::enCancelBook:
             CancelBooking(vRooms, vBookings);
             SaveBookingsToFile(vBookings);
             break;
-        case 4:
+            case enMainMenuChoice::enShowBookings:
             PrintBookingList(vBookings);
             break;
-        case 5:
+            case enMainMenuChoice::enShowInvoice:
             ShowInvoice(vBookings);
             break;
-        case 6:
+            case enMainMenuChoice::enExit:
             cout << "\nGoodbye!\n";
             break;
         }
-        if (Choice != 6)
+        if (Choice != enMainMenuChoice::enExit)
         {
             cout << "\nPress Enter to continue...";
             cin.ignore();
             cin.get();
         }
-    } while (Choice != 6);
+    } while (Choice != enMainMenuChoice::enExit);
 }
 
 int main()
