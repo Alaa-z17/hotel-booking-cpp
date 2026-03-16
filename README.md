@@ -1,9 +1,6 @@
 # 🏨 Hotel Booking System — C++
 
-A console-based Hotel Booking System built in **C++** demonstrating
-core concepts of **Functional & Procedural Programming**.
-
----
+## A console-based Hotel Booking System in C++ demonstrating Functional & Procedural Programming — vectors, file I/O, exception handling, pointers, and strings.
 
 ## 🎯 Learning Objectives
 
