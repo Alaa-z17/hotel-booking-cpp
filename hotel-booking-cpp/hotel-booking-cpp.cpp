@@ -304,7 +304,57 @@ void CancelBooking(vector<stRoom>& vRooms,
 
     cout << "\nBooking Cancelled Successfully!\n";
 }
+void PrintInvoice(stBooking Booking)
+{
+    cout << "\n";
+    cout << string(49, '=') << "\n";
+    cout << "              HOTEL INVOICE\n";
+    cout << string(49, '=') << "\n";
+    cout << left
+        << setw(20) << "Booking ID"
+        << ": " << Booking.BookingID << "\n";
+    cout << left
+        << setw(20) << "Guest Name"
+        << ": " << Booking.GuestName << "\n";
+    cout << left
+        << setw(20) << "Room Number"
+        << ": " << Booking.Room.RoomNumber << "\n";
+    cout << left
+        << setw(20) << "Room Type"
+        << ": " << GetRoomTypeName(Booking.Room.Type) << "\n";
+    cout << left
+        << setw(20) << "Check-In"
+        << ": " << Booking.CheckInDate << "\n";
+    cout << left
+        << setw(20) << "Check-Out"
+        << ": " << Booking.CheckOutDate << "\n";
+    cout << left
+        << setw(20) << "Nights"
+        << ": " << Booking.NumberOfNights << "\n";
+    cout << left
+        << setw(20) << "Price/Night"
+        << ": $" << Booking.Room.PricePerNight << "\n";
+    cout << string(49, '-') << "\n";
+    cout << left
+        << setw(20) << "Total Price"
+        << ": $" << Booking.TotalPrice << "\n";
+    cout << string(49, '=') << "\n";
+}
 
+void ShowInvoice(vector<stBooking>& vBookings)
+{
+    if (vBookings.empty())
+    {
+        cout << "\nNo Bookings Found!\n";
+        return;
+    }
+
+    PrintBookingList(vBookings);
+
+    unsigned short BookingID = ReadBookingID(vBookings);
+    int Index = FindBookingIndexByID(BookingID, vBookings);
+    PrintInvoice(vBookings[Index]);
+}
 int main()
 {
     return 0;
