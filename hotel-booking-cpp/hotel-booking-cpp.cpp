@@ -433,8 +433,96 @@ void LoadBookingsFromFile(vector<stBooking>& vBookings,
     }
     MyFile.close();
 }
+void ResetScreen()
+{
+    system("cls");
+    system("color 0F");
+}
+
+void PrintMainMenu()
+{
+    cout << "\n";
+    cout << string(49, '=') << "\n";
+    cout << "         HOTEL BOOKING SYSTEM\n";
+    cout << string(49, '=') << "\n";
+    cout << "[1] Show Available Rooms\n";
+    cout << "[2] Book a Room\n";
+    cout << "[3] Cancel Booking\n";
+    cout << "[4] Show All Bookings\n";
+    cout << "[5] Show Invoice\n";
+    cout << "[6] Exit\n";
+    cout << string(49, '=') << "\n";
+    cout << "Enter your choice: ";
+}
+
+enum enMainMenuChoice
+{
+    enShowRooms = 1,
+    enBookRoom = 2,
+    enCancelBook = 3,
+    enShowBookings = 4,
+    enShowInvoice = 5,
+    enExit = 6
+};
+
+short ReadMainMenuChoice()
+{
+    short Choice = 0;
+    do
+    {
+        PrintMainMenu();
+        cin >> Choice;
+    } while (Choice < 1 || Choice > 6);
+    return Choice;
+}
+
+void RunHotelSystem()
+{
+    vector<stRoom> vRooms;
+    vector<stBooking> vBookings;
+
+    LoadRoomList(vRooms);
+    LoadBookingsFromFile(vBookings, vRooms);
+
+    short Choice = 0;
+    do
+    {
+        ResetScreen();
+        Choice = ReadMainMenuChoice();
+        switch (Choice)
+        {
+        case 1:
+            PrintRoomList(vRooms);
+            break;
+        case 2:
+            AddBooking(vRooms, vBookings);
+            SaveBookingsToFile(vBookings);
+            break;
+        case 3:
+            CancelBooking(vRooms, vBookings);
+            SaveBookingsToFile(vBookings);
+            break;
+        case 4:
+            PrintBookingList(vBookings);
+            break;
+        case 5:
+            ShowInvoice(vBookings);
+            break;
+        case 6:
+            cout << "\nGoodbye!\n";
+            break;
+        }
+        if (Choice != 6)
+        {
+            cout << "\nPress Enter to continue...";
+            cin.ignore();
+            cin.get();
+        }
+    } while (Choice != 6);
+}
 
 int main()
 {
+    RunHotelSystem();
     return 0;
 }
