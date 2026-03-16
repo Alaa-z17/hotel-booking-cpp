@@ -3,6 +3,8 @@
 #include<string>
 #include<vector>
 #include<ctime>
+#include<fstream>
+
 using namespace std;
 
 enum enRoomType { Single = 1, Double = 2, Suite = 3 };
@@ -355,6 +357,83 @@ void ShowInvoice(vector<stBooking>& vBookings)
     int Index = FindBookingIndexByID(BookingID, vBookings);
     PrintInvoice(vBookings[Index]);
 }
+
+void SaveBookingsToFile(vector<stBooking>& vBookings)
+{
+    ofstream MyFile("Bookings.txt");
+    for (stBooking& Booking : vBookings)
+    {
+        MyFile << Booking.BookingID << "#";
+        MyFile << Booking.GuestName << "#";
+        MyFile << Booking.Room.RoomNumber << "#";
+        MyFile << Booking.Room.Type << "#";
+        MyFile << Booking.Room.PricePerNight << "#";
+        MyFile << Booking.Room.Status << "#";
+        MyFile << Booking.CheckInDate << "#";
+        MyFile << Booking.CheckOutDate << "#";
+        MyFile << Booking.NumberOfNights << "#";
+        MyFile << Booking.TotalPrice << "\n";
+    }
+    MyFile.close();
+}
+
+stBooking LoadBookingFromLine(string Line)
+{
+    stBooking Booking;
+    string Value = "";
+
+    short FieldNumber = 0;
+    for (char& C : Line)
+    {
+        if (C == '#')
+        {
+            switch (FieldNumber)
+            {
+            case 0: Booking.BookingID = stoi(Value); break;
+            case 1: Booking.GuestName = Value; break;
+            case 2: Booking.Room.RoomNumber = stoi(Value); break;
+            case 3: Booking.Room.Type = (enRoomType)stoi(Value); break;
+            case 4: Booking.Room.PricePerNight = stod(Value); break;
+            case 5: Booking.Room.Status = (enBookingStatus)stoi(Value); break;
+            case 6: Booking.CheckInDate = Value; break;
+            case 7: Booking.CheckOutDate = Value; break;
+            case 8: Booking.NumberOfNights = stoi(Value); break;
+            }
+            Value = "";
+            FieldNumber++;
+        }
+        else
+        {
+            Value += C;
+        }
+    }
+    Booking.TotalPrice = stod(Value);
+    return Booking;
+}
+
+void LoadBookingsFromFile(vector<stBooking>& vBookings,
+    vector<stRoom>& vRooms)
+{
+    ifstream MyFile("Bookings.txt");
+    if (!MyFile.is_open())
+        return;
+
+    vBookings.clear();
+    string Line = "";
+    while (getline(MyFile, Line))
+    {
+        if (Line.empty()) continue;
+        stBooking Booking = LoadBookingFromLine(Line);
+        vBookings.push_back(Booking);
+
+        int Index = FindRoomIndexByNumber(
+            Booking.Room.RoomNumber, vRooms);
+        if (Index != -1)
+            vRooms[Index].Status = enBookingStatus::Booked;
+    }
+    MyFile.close();
+}
+
 int main()
 {
     return 0;
