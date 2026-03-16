@@ -242,7 +242,68 @@ void AddBooking(vector<stRoom>& vRooms, vector<stBooking>& vBookings)
     vBookings.push_back(CreateBooking(vRooms, vBookings));
     cout << "\nBooking Added Successfully!\n";
 }
+void PrintBookingList(vector<stBooking>& vBookings)
+{
+    cout << "\n";
+    cout << left
+        << setw(10) << "BookingID"
+        << setw(20) << "Guest Name"
+        << setw(10) << "Room No"
+        << setw(12) << "Check-In"
+        << setw(12) << "Check-Out"
+        << setw(8) << "Nights"
+        << setw(10) << "Total" << "\n";
+    cout << string(82, '-') << "\n";
 
+    for (stBooking& Booking : vBookings)
+    {
+        cout << left
+            << setw(10) << Booking.BookingID
+            << setw(20) << Booking.GuestName
+            << setw(10) << Booking.Room.RoomNumber
+            << setw(12) << Booking.CheckInDate
+            << setw(12) << Booking.CheckOutDate
+            << setw(8) << Booking.NumberOfNights
+            << setw(10) << Booking.TotalPrice << "\n";
+    }
+    cout << string(82, '-') << "\n";
+}
+
+unsigned short ReadBookingID(vector<stBooking>& vBookings)
+{
+    unsigned short BookingID = 0;
+    do
+    {
+        cout << "Enter Booking ID: ";
+        cin >> BookingID;
+        if (!IsBookingExist(BookingID, vBookings))
+            cout << "Booking not found! Try again.\n";
+    } while (!IsBookingExist(BookingID, vBookings));
+    return BookingID;
+}
+
+void CancelBooking(vector<stRoom>& vRooms,
+    vector<stBooking>& vBookings)
+{
+    if (vBookings.empty())
+    {
+        cout << "\nNo Bookings Found!\n";
+        return;
+    }
+
+    PrintBookingList(vBookings);
+
+    unsigned short BookingID = ReadBookingID(vBookings);
+    int BookingIndex = FindBookingIndexByID(BookingID, vBookings);
+
+    int RoomIndex = FindRoomIndexByNumber(
+        vBookings[BookingIndex].Room.RoomNumber, vRooms);
+    vRooms[RoomIndex].Status = enBookingStatus::Available;
+
+    vBookings.erase(vBookings.begin() + BookingIndex);
+
+    cout << "\nBooking Cancelled Successfully!\n";
+}
 
 int main()
 {
