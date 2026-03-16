@@ -2,6 +2,7 @@
 #include<iomanip>
 #include<string>
 #include<vector>
+#include<ctime>
 using namespace std;
 
 enum enRoomType { Single = 1, Double = 2, Suite = 3 };
@@ -143,6 +144,106 @@ unsigned short ReadAvailableRoomNumber(vector<stRoom>& vRooms)
     } while (!IsRoomAvailable(RoomNumber, vRooms));
     return RoomNumber;
 }
+unsigned short GenerateBookingID(vector<stBooking>& vBookings)
+{
+    return (unsigned short)vBookings.size() + 1;
+}
+
+string ReadGuestName()
+{
+    string Name = "";
+    cout << "Enter Guest Name: ";
+    cin.ignore();
+    getline(cin, Name);
+    return Name;
+}
+int GetCurrentYear()
+{
+    time_t t = time(NULL);
+    tm* timePtr = localtime(&t);
+    return timePtr->tm_year + 1900;
+}
+bool IsValidDate(string Date)
+{
+    if (Date.length() != 10)
+        return false;
+
+    if (Date[2] != '/' || Date[5] != '/')
+        return false;
+
+    for (int i = 0; i < 10; i++)
+    {
+        if (i == 2 || i == 5) continue;
+        if (!isdigit(Date[i]))
+            return false;
+    }
+
+    int Day = stoi(Date.substr(0, 2));
+    int Month = stoi(Date.substr(3, 2));
+    int Year = stoi(Date.substr(6, 4));
+
+    if (Month < 1 || Month > 12)
+        return false;
+    if (Day < 1 || Day > 31)
+        return false;
+    if (Year < GetCurrentYear())
+        return false;
+
+    return true;
+}
+string ReadDate(string DateType)
+{
+    string Date = "";
+    do
+    {
+        cout << "Enter " << DateType << " Date (DD/MM/YYYY): ";
+        cin >> Date;
+        if (!IsValidDate(Date))
+            cout << "Invalid Date! Try again.\n";
+    } while (!IsValidDate(Date));
+    return Date;
+}
+
+unsigned short ReadNumberOfNights()
+{
+    unsigned short Nights = 0;
+    do
+    {
+        cout << "Enter Number of Nights: ";
+        cin >> Nights;
+    } while (Nights < 1);
+    return Nights;
+}
+
+stBooking CreateBooking(vector<stRoom>& vRooms,
+    vector<stBooking>& vBookings)
+{
+    stBooking Booking;
+    Booking.BookingID = GenerateBookingID(vBookings);
+
+    unsigned short RoomNumber = ReadAvailableRoomNumber(vRooms);
+    int Index = FindRoomIndexByNumber(RoomNumber, vRooms);
+    Booking.Room = vRooms[Index];
+
+    Booking.GuestName = ReadGuestName();
+    Booking.CheckInDate = ReadDate("Check-In");
+    Booking.CheckOutDate = ReadDate("Check-Out");
+    Booking.NumberOfNights = ReadNumberOfNights();
+    Booking.TotalPrice = Booking.Room.PricePerNight *
+        Booking.NumberOfNights;
+
+    vRooms[Index].Status = enBookingStatus::Booked;
+
+    return Booking;
+}
+
+void AddBooking(vector<stRoom>& vRooms, vector<stBooking>& vBookings)
+{
+    vBookings.push_back(CreateBooking(vRooms, vBookings));
+    cout << "\nBooking Added Successfully!\n";
+}
+
+
 int main()
 {
     return 0;
