@@ -58,7 +58,7 @@ void LoadRoomList(vector<stRoom>& vRooms)
     vRooms.push_back(CreateRoom(302, enRoomType::Suite, 250));
 }
 
-void PrintRoomList(vector<stRoom> vRooms)
+void PrintRoomList(vector<stRoom> &vRooms)
 {
     cout << "\n";
     cout << left
@@ -77,6 +77,71 @@ void PrintRoomList(vector<stRoom> vRooms)
             << setw(12) << GetBookingStatusName(Room.Status) << "\n";
     }
     cout << string(49, '-') << "\n";
+}
+int FindRoomIndexByNumber(unsigned short RoomNumber,
+    vector<stRoom>& vRooms)
+{
+    for (int i = 0; i < vRooms.size(); i++)
+    {
+        if (vRooms[i].RoomNumber == RoomNumber)
+            return i;
+    }
+    return -1;
+}
+
+bool IsRoomExist(unsigned short RoomNumber, vector<stRoom>& vRooms)
+{
+    return FindRoomIndexByNumber(RoomNumber, vRooms) != -1;
+}
+
+bool IsRoomAvailable(unsigned short RoomNumber, vector<stRoom>& vRooms)
+{
+    int Index = FindRoomIndexByNumber(RoomNumber, vRooms);
+    if (Index == -1)
+        return false;
+    return vRooms[Index].Status == enBookingStatus::Available;
+}
+
+int FindBookingIndexByID(unsigned short BookingID,
+    vector<stBooking>& vBookings)
+{
+    for (int i = 0; i < vBookings.size(); i++)
+    {
+        if (vBookings[i].BookingID == BookingID)
+            return i;
+    }
+    return -1;
+}
+
+bool IsBookingExist(unsigned short BookingID,
+    vector<stBooking>& vBookings)
+{
+    return FindBookingIndexByID(BookingID, vBookings) != -1;
+}
+
+unsigned short ReadRoomNumber(vector<stRoom>& vRooms)
+{
+    unsigned short RoomNumber = 0;
+    do
+    {
+        cout << "Enter Room Number: ";
+        cin >> RoomNumber;
+        if (!IsRoomExist(RoomNumber, vRooms))
+            cout << "Room not found! Try again.\n";
+    } while (!IsRoomExist(RoomNumber, vRooms));
+    return RoomNumber;
+}
+
+unsigned short ReadAvailableRoomNumber(vector<stRoom>& vRooms)
+{
+    unsigned short RoomNumber = 0;
+    do
+    {
+        RoomNumber = ReadRoomNumber(vRooms);
+        if (!IsRoomAvailable(RoomNumber, vRooms))
+            cout << "Room is already booked! Try again.\n";
+    } while (!IsRoomAvailable(RoomNumber, vRooms));
+    return RoomNumber;
 }
 int main()
 {
