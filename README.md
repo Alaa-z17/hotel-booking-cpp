@@ -2,6 +2,14 @@
 
 ## A console-based Hotel Booking System in C++ demonstrating Functional & Procedural Programming — vectors, file I/O, exception handling, pointers, and strings.
 
+
+## 🎬 Video Walkthrough
+
+[![Hotel Booking System in C++](https://img.youtube.com/vi/6b2S6E53nCw/0.jpg)](https://youtu.be/6b2S6E53nCw)
+
+> Click the image above to watch the full project walkthrough on YouTube.
+
+
 ## 🎯 Learning Objectives
 
 - Structuring a program using functions (Procedural Programming)
